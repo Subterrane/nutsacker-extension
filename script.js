@@ -1,43 +1,30 @@
-var canvas, ctx, images, img, nutSack, sourceImg, width, height, ran;
+var canvas, ctx, images, img, nutSack, sourceImg, width, height;
+
+nutSack = document.createElement('img');
+nutSack.src = chrome.extension.getURL('nutsack.png');
 
 chrome.extension.onRequest.addListener(function (request) {
-    if (request.greeting == 'hello' && !ran) {
+    if (request.greeting == 'hello') {
 
-        ran = true;
+        images = document.getElementsByTagName('img');
 
-        nutSack = document.createElement('img');
-        nutSack.src = chrome.extension.getURL('nutsack.png');
-        nutSack.addEventListener('load', function() {
+        for (var ix = 0; ix < images.length; ix++) {
+            sourceImg = images[ix];
 
-            images = document.getElementsByTagName('img');
+            width = sourceImg.clientWidth;
+            height = sourceImg.clientHeight;
 
-            for (img in images) {
+            if (width >= 100) {
+                canvas = document.createElement('canvas');
+                sourceImg.parentNode.replaceChild(canvas, sourceImg);
 
-                if (images.hasOwnProperty(img)) {
-                    sourceImg = images[img];
+                canvas.setAttribute('width', width.toString());
+                canvas.setAttribute('height', height.toString());
 
-                    width = sourceImg.clientWidth;
-                    height = sourceImg.clientHeight;
-
-                    if (width >= 100) {
-                        console.log('stuff');
-
-                        canvas = document.createElement('canvas');
-
-                        canvas.setAttribute('width', width.toString());
-                        canvas.setAttribute('height', height.toString());
-
-                        ctx = canvas.getContext('2d');
-                        ctx.drawImage(sourceImg, 0, 0, width, height);
-                        ctx.drawImage(nutSack, 0, 0, width, height);
-
-                        sourceImg.parentNode.replaceChild(canvas, sourceImg);
-
-                        //canvas.src = canvas.toDataURL("image/png");
-                        //toDataURL() throws error due to tainted canvas
-                    }
-                }
+                ctx = canvas.getContext('2d');
+                ctx.drawImage(sourceImg, 0, 0, width, height);
+                ctx.drawImage(nutSack, 0, 0, width, height);
             }
-        }, false);
+        }
     }
 });
