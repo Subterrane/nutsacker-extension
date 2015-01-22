@@ -24,6 +24,9 @@ chrome.extension.onRequest.addListener(function (request) {
                 ctx = canvas.getContext('2d');
                 ctx.drawImage(sourceImg, 0, 0, width, height);
                 ctx.drawImage(nutSack, 0, 0, width, height);
+
+                // the images list is LIVE so we need to decrement the counter after the img is replaced by the canvas
+                ix--;
             }
         }
     }
